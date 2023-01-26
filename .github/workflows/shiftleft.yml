@@ -21,12 +21,13 @@ jobs:
       id: extract_branch
     - name: NextGen Static Analysis
       run: |
-        pip install --upgrade setuptools wheel
         pip install -r requirements.txt
         ${GITHUB_WORKSPACE}/sl analyze --strict --wait --app shiftleft-python-demo --container 18fgsa/s3-resource --tag branch=${{ github.head_ref || steps.extract_branch.outputs.branch }} --python $(pwd)
       env:
         SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
-        
+        SHIFTLEFT_API_HOST: www-ext.stg.shiftleft.io
+        SHIFTLEFT_GRPC_TELEMETRY_HOST: SL_EXTERNAL_GRPC_TELEMETRY_HOST_TOKEN
+        SHIFTLEFT_GRPC_API_HOST: api-ext.stg.shiftleft.io:443
       if:
         ${{ hashFiles('requirements.txt') != '' }}
     - name: Legacy Static Analysis
@@ -35,7 +36,9 @@ jobs:
         ${GITHUB_WORKSPACE}/sl analyze --strict --wait --no-cpg --app shiftleft-python-demo --tag branch=${{ github.head_ref || steps.extract_branch.outputs.branch }} --python $(pwd)
       env:
         SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
-        
+        SHIFTLEFT_API_HOST: www-ext.stg.shiftleft.io
+        SHIFTLEFT_GRPC_TELEMETRY_HOST: SL_EXTERNAL_GRPC_TELEMETRY_HOST_TOKEN
+        SHIFTLEFT_GRPC_API_HOST: api-ext.stg.shiftleft.io:443
       if:
         ${{ hashFiles('requirements.txt') == '' }}
   Build-Rules: 
@@ -55,5 +58,7 @@ jobs:
             --github-token=${{ secrets.GITHUB_TOKEN }}
       env:
         SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
-         
+        SHIFTLEFT_API_HOST: www-ext.stg.shiftleft.io
+        SHIFTLEFT_GRPC_TELEMETRY_HOST: SL_EXTERNAL_GRPC_TELEMETRY_HOST_TOKEN
+        SHIFTLEFT_GRPC_API_HOST: api-ext.stg.shiftleft.io:443 
   
